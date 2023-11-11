@@ -1,4 +1,4 @@
-export type ANSI = 'never'|'always'|'auto';
+export type ANSI = 'never' | 'always' | 'auto';
 
 export interface DockerComposeOptions {
   projectName?: string;
@@ -11,7 +11,7 @@ export interface ComposeOptions {
   v1?: boolean;
   env?: NodeJS.ProcessEnv;
   cwd?: string;
-  path?: string|string[];
+  path?: string | string[];
   config?: string;
   debug?: boolean;
   options?: DockerComposeOptions;

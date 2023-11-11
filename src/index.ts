@@ -1,89 +1,101 @@
-import { cwd as nodeCwd } from 'node:process';
 import { spawn } from 'node:child_process';
-import type { ComposeOptions, ExecuteOptions } from './types';
-import { camelToSnakeCase } from './helpers';
+import { cwd as nodeCwd } from 'node:process';
 
-export const compose = (options: ComposeOptions = {}) => {
+import { camelToSnakeCase } from './helpers';
+import type { ComposeOptions, ExecuteOptions } from './types';
+
+export function compose(options: ComposeOptions = {}) {
   if (options.debug) {
     console.debug(options);
   }
 
   return {
-    up: async (service?: string|string[], interactive = false) => execute({
-      ...options,
-      command: 'up',
-      args: [
-        ...(interactive ? [] : ['-d']),
-        ...(service ? Array.isArray(service) ? service : [service] : []),
-      ],
-    }),
-    stop: async (service?: string|string[]) => execute({
-      ...options,
-      command: 'stop',
-      ...(service ? {
-        args: Array.isArray(service) ? service : [service],
-      } : {}),
-    }),
-    build: async (service?: string|string[]) => execute({
-      ...options,
-      command: 'build',
-      ...(service ? {
-        args: Array.isArray(service) ? service : [service],
-      } : {}),
-    }),
-    pull: async (service?: string|string[]) => execute({
-      ...options,
-      command: 'pull',
-      ...(service ? {
-        args: Array.isArray(service) ? service : [service],
-      } : {}),
-    }),
-    exec: async (service: string, command: string|string[]) => execute({
-      ...options,
-      command: 'exec',
-      args: [
-        '-T', service,
-        ...(Array.isArray(command) ? command : [command]),
-      ],
-    }),
-    run: async (service: string, command: string|string[]) => execute({
-      ...options,
-      command: 'run',
-      args: [
-        '-T', service,
-        ...(Array.isArray(command) ? command : [command]),
-      ],
-    }),
-    restart: async (service?: string|string[]) => execute({
-      ...options,
-      command: 'restart',
-      ...(service ? {
-        args: Array.isArray(service) ? service : [service],
-      } : {}),
-    }),
-    rm: async (services: string[]) => execute({
-      ...options,
-      command: 'rm',
-      args: ['-f', ...services],
-    }),
-    pause: async (service: string) => execute({
-      ...options,
-      command: 'pause',
-      args: [service],
-    }),
-    unpause: async (service: string) => execute({
-      ...options,
-      command: 'unpause',
-      args: [service],
-    }),
-    down: async () => execute({
-      ...options,
-      command: 'down',
-    }),
-    kill: async () => execute({
-      ...options,
-      command: 'kill',
-    }),
+    up: async (service?: string | string[], interactive = false) =>
+      execute({
+        ...options,
+        command: 'up',
+        args: [...(interactive ? [] : ['-d']), ...(service ? (Array.isArray(service) ? service : [service]) : [])],
+      }),
+    stop: async (service?: string | string[]) =>
+      execute({
+        ...options,
+        command: 'stop',
+        ...(service
+          ? {
+              args: Array.isArray(service) ? service : [service],
+            }
+          : {}),
+      }),
+    build: async (service?: string | string[]) =>
+      execute({
+        ...options,
+        command: 'build',
+        ...(service
+          ? {
+              args: Array.isArray(service) ? service : [service],
+            }
+          : {}),
+      }),
+    pull: async (service?: string | string[]) =>
+      execute({
+        ...options,
+        command: 'pull',
+        ...(service
+          ? {
+              args: Array.isArray(service) ? service : [service],
+            }
+          : {}),
+      }),
+    exec: async (service: string, command: string | string[]) =>
+      execute({
+        ...options,
+        command: 'exec',
+        args: ['-T', service, ...(Array.isArray(command) ? command : [command])],
+      }),
+    run: async (service: string, command: string | string[]) =>
+      execute({
+        ...options,
+        command: 'run',
+        args: ['-T', service, ...(Array.isArray(command) ? command : [command])],
+      }),
+    restart: async (service?: string | string[]) =>
+      execute({
+        ...options,
+        command: 'restart',
+        ...(service
+          ? {
+              args: Array.isArray(service) ? service : [service],
+            }
+          : {}),
+      }),
+    rm: async (services: string[]) =>
+      execute({
+        ...options,
+        command: 'rm',
+        args: ['-f', ...services],
+      }),
+    pause: async (service: string) =>
+      execute({
+        ...options,
+        command: 'pause',
+        args: [service],
+      }),
+    unpause: async (service: string) =>
+      execute({
+        ...options,
+        command: 'unpause',
+        args: [service],
+      }),
+    down: async () =>
+      execute({
+        ...options,
+        command: 'down',
+      }),
+    kill: async () =>
+      execute({
+        ...options,
+        command: 'kill',
+      }),
     version: async () => {
       const result = await execute({
         ...options,
@@ -94,9 +106,9 @@ export const compose = (options: ComposeOptions = {}) => {
       return result.replaceAll(/\n/g, '');
     },
   };
-};
+}
 
-export const execute = async (options: ExecuteOptions) => {
+export async function execute(options: ExecuteOptions) {
   if (options.debug) {
     console.debug(`running command ${options.command}`);
   }
@@ -143,8 +155,8 @@ export const execute = async (options: ExecuteOptions) => {
     let stdout = '';
     let stderr = '';
 
-    child.stdout.on('data', data => stdout = `${stdout}${data.toString()}`);
-    child.stderr.on('data', data => stderr = `${stdout}${data.toString()}`);
+    child.stdout.on('data', data => (stdout = `${stdout}${data.toString()}`));
+    child.stderr.on('data', data => (stderr = `${stdout}${data.toString()}`));
 
     // Instantly reject if we fail to run the command.
     child.on('error', e => reject(e));
@@ -170,4 +182,4 @@ export const execute = async (options: ExecuteOptions) => {
   }
 
   return result;
-};
+}

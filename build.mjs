@@ -1,5 +1,5 @@
-import { nodeExternalsPlugin } from 'esbuild-node-externals';
 import { build } from 'esbuild';
+import { nodeExternalsPlugin } from 'esbuild-node-externals';
 
 /** @type {import('esbuild').BuildOptions} */
 const options = {
