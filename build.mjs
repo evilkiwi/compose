@@ -4,7 +4,6 @@ import { nodeExternalsPlugin } from 'esbuild-node-externals';
 /** @type {import('esbuild').BuildOptions} */
 const options = {
   sourcemap: process.env.NODE_ENV === 'development',
-  watch: process.env.NODE_ENV === 'development',
   plugins: [nodeExternalsPlugin()],
   entryPoints: ['./src/index.ts'],
   logLevel: 'debug',
